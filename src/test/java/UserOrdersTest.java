@@ -1,3 +1,4 @@
+import io.qameta.allure.Step;
 import io.restassured.response.ValidatableResponse;
 import org.example.StellarBurgerClient;
 import org.example.User;
@@ -13,10 +14,14 @@ public class UserOrdersTest {
     private User user;
     private String token;
 
+    @Step("Регистрация и авторизация пользователя")
     private void registerUserAndLogin() {
 
         // Регистрация нового пользователя с динамическим email
-        user = new User(System.currentTimeMillis() + "@mail.ru", "DashaDasha", "Dasha");
+        user = new User();
+        user.setEmail(System.currentTimeMillis() + "@mail.ru");
+        user.setPassword("DashaDasha");
+        user.setName("Dasha");
         ValidatableResponse response = client.registerUser(user);
         token = response.extract().jsonPath().getString("accessToken");
         // Проверка ответа сервера
@@ -26,14 +31,15 @@ public class UserOrdersTest {
     }
 
     @Before
+    @Step("Подготовка среды для тестов")
     public void setUp() {
 
         registerUserAndLogin();
     }
 
     @Test
-    // Получение заказов с авторизацией
-    public void getUserOrdersWithAuth_success() {
+    @Step("Получение заказов с авторизацией")
+    public void getUserOrdersWithAuthSuccess() {
 
         ValidatableResponse response = client.getUserOrders(token);
         // Проверка ответа сервера
@@ -43,8 +49,8 @@ public class UserOrdersTest {
     }
 
     @Test
-    // Получение заказов без авторизации
-    public void getUserOrdersWithoutAuth_fail() {
+    @Step("Получение заказов без авторизации")
+    public void getUserOrdersWithoutAuthFail() {
 
         ValidatableResponse response = client.getUserOrders("");
         // Проверка ответа сервера
@@ -54,8 +60,8 @@ public class UserOrdersTest {
     }
 
     @After
-    // Метод для удаления пользователья после завершения теста
-    public void deleteUser_afterTest() {
+    @Step("Удаление пользователя после завершения теста")
+    public void deleteUserAfterTest() {
         // Проверка наличия токена
         if (token != null) {
             // Удаление пользователя через клиентский API

@@ -1,21 +1,21 @@
 package org.example;
 
+import io.qameta.allure.Step;
+import io.restassured.http.ContentType;
 import io.restassured.response.ValidatableResponse;
 
 import static io.restassured.RestAssured.given;
+import static org.example.Ingredients.INVALID_INGREDIENT_ID;
+
 
 public class StellarBurgerClient {
 
     // Статическая переменная для хранения базового URL
     private static final String BASE_URL = "https://stellarburgers.nomoreparties.site/";
 
-    // Идентификатор "Флюоресцентная булка"
-    public static final String FLU_BUN_ID = "61c0c5a71d1f82001bdaaa6d";
-
-    // Строка с неправильным идентификатором ингредиента для тестирования
-    public static final String INVALID_INGREDIENT_ID = "{\n \"ingredients\": [\"1234543254\"]\n" + "}";
 
     // Метод для регистрации нового пользователя
+    @Step("Регистрация нового пользователя")
     public ValidatableResponse registerUser(User user) {
         return given()
                 .log()
@@ -31,6 +31,7 @@ public class StellarBurgerClient {
     }
 
     // Метод для входа пользователя в систему
+    @Step("Вход пользователя в систему")
     public ValidatableResponse loginUser(UserCredentials credentials) {
         return given()
                 .log()
@@ -49,6 +50,7 @@ public class StellarBurgerClient {
 
 
     // Метод для удаления пользователя
+    @Step("Удаление пользователя")
     public void deleteUser(String token) {
         given()
                 .log()
@@ -64,6 +66,7 @@ public class StellarBurgerClient {
     }
 
     // Метод для обновления данных пользователя
+    @Step("Обновление данных пользователя")
     public ValidatableResponse updateUser(User updatedUser, String token) {
         return given()
                 .log().all()
@@ -78,6 +81,7 @@ public class StellarBurgerClient {
     }
 
     // Метод для обновления данных пользователя без авторизации
+    @Step("Обновление данных пользователя без авторизации")
     public ValidatableResponse updateUserWithoutAuth(User updatedUser) {
         return given()
                 .log().all()
@@ -91,18 +95,21 @@ public class StellarBurgerClient {
     }
 
     // Метод для создания заказа
-    public ValidatableResponse createOrder(String ingredient) {
+    @Step("Создание заказа")
+    public ValidatableResponse createOrder(Order order, String token) {
         return given()
-                .log().all()
+                .contentType(ContentType.JSON)
+                .header("Authorization", token)
                 .baseUri(BASE_URL)
-                .header("Content-type", "application/json")
-                .body("{\n \"ingredients\": [\"" + ingredient + "\"] \n}")
-                // Отправка POST-запроса на конечную точку создания заказа
+                .body(order)
+                .when()
                 .post("/api/orders")
-                .then().log().all();
+                .then()
+                .log().all();
     }
 
     // Метод для создания заказа без ингридиентов
+    @Step("Создание заказа без ингридиентов")
     public ValidatableResponse createOrderWithNoIngredients(String ingredient) {
         if (ingredient.equals(" ")) {
             return given()
@@ -126,6 +133,7 @@ public class StellarBurgerClient {
     }
 
     // Метод для получения заказов пользователя
+    @Step("Получаем заказ пользователя")
     public ValidatableResponse getUserOrders(String token){
         return given()
                 .log().all()

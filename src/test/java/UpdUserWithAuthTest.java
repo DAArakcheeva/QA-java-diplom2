@@ -1,3 +1,4 @@
+import io.qameta.allure.Step;
 import io.restassured.response.ValidatableResponse;
 import org.example.StellarBurgerClient;
 import org.example.User;
@@ -15,10 +16,14 @@ public class UpdUserWithAuthTest {
     private String token;
 
     @Before
-    public void registerUser_success() {
+    @Step("Предварительная регистрация пользователя")
+    public void registerUserSuccess() {
 
         // Регистрация нового пользователя с динамическим email
-        user = new User(System.currentTimeMillis() + "@mail.ru", "DashaDasha", "Dasha");
+        user = new User();
+        user.setEmail(System.currentTimeMillis() + "@mail.ru");
+        user.setPassword("DashaDasha");
+        user.setName("Dasha");
         ValidatableResponse response = client.registerUser(user);
         token = response.extract().jsonPath().getString("accessToken");
 
@@ -35,8 +40,8 @@ public class UpdUserWithAuthTest {
         }
     }
 
-    // Метод для успешной авторизации пользователя
-    public void loginUser_success() {
+    @Step("Авторизация пользователя")
+    public void loginUserSuccess() {
 
         // Проверки текущих значений user и token
         System.out.println("User: " + user);
@@ -56,14 +61,18 @@ public class UpdUserWithAuthTest {
     }
 
     @Test
-    // Обновление почты и имени пользователя
-    public void updateEmailAndName_success() {
+    @Step("Обновление почты и имени пользователя")
+    public void updateEmailAndNameSuccess() {
 
         // Генерация нового email и имя пользователя на основе существующего
         String newEmail = "upd_" + user.getEmail();
         String newName = "UPD_" + user.getName();
 
-        User updatedUser = new User(newEmail, user.getPassword(), newName);
+        User updatedUser = new User();
+        updatedUser.setEmail(newEmail);
+        updatedUser.setPassword(user.getPassword());
+        updatedUser.setName(newName);
+
         // Отправляем запрос на обновление данных пользователя
         ValidatableResponse response = client.updateUser(updatedUser, token);
         // Проверка ответа сервера
@@ -78,8 +87,8 @@ public class UpdUserWithAuthTest {
     }
 
     @After
-    // Метод для удаления пользователья после завершения теста
-    public void deleteUser_afterTest() {
+    @Step("Удаление пользователя после завершения теста")
+    public void deleteUserAfterTest() {
         // Проверка наличия токена
         if (token != null) {
             client.deleteUser(token);

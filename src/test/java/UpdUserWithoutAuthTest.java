@@ -1,3 +1,4 @@
+import io.qameta.allure.Step;
 import io.restassured.response.ValidatableResponse;
 import org.example.StellarBurgerClient;
 import org.example.User;
@@ -14,10 +15,14 @@ public class UpdUserWithoutAuthTest {
     private String token;
 
     @Before
-    public void registerUser_success() {
+    @Step("Регистрация нового пользователя")
+    public void registerUserSuccess() {
 
         // Регистрация нового пользователя с динамическим email
-        user = new User(System.currentTimeMillis() + "@mail.ru", "DashaDasha", "Dasha");
+        user = new User();
+        user.setEmail(System.currentTimeMillis() + "@mail.ru");
+        user.setPassword("DashaDasha");
+        user.setName("Dasha");
         ValidatableResponse response = client.registerUser(user);
         token = response.extract().jsonPath().getString("accessToken");
         // Проверка ответа сервера
@@ -27,12 +32,15 @@ public class UpdUserWithoutAuthTest {
     }
 
     @Test
-    // Обновление почты и имени пользователя
-    public void updateEmailAndName_fail() {
+    @Step("Обновление почты и имени пользователя")
+    public void updateEmailAndNameFail() {
 
         String newEmail = "NEW_" + user.getEmail();
         String newName = "NEW_" + user.getName();
-        User updatedUser = new User(newEmail, user.getPassword(), newName);
+        User updatedUser = new User();
+        updatedUser.setEmail(newEmail);
+        updatedUser.setPassword(user.getPassword());
+        updatedUser.setName(newName);
         // Отправка запроса на обновление данных пользователя без авторизации
         ValidatableResponse response = client.updateUserWithoutAuth(updatedUser);
         // Проверка ответа сервера
@@ -42,8 +50,8 @@ public class UpdUserWithoutAuthTest {
     }
 
     @After
-    // Метод для удаления пользователья после завершения теста
-    public void deleteUser_afterTest() {
+    @Step("Удаление пользователя после завершения теста")
+    public void deleteUserAfterTest() {
         // Проверка наличия токена
         if (token != null) {
             // Удаление пользователя через клиентский API
