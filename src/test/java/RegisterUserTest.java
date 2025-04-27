@@ -74,6 +74,7 @@ public class RegisterUserTest {
 
     @After
     @Step("Удаление пользователя после завершения теста")
+    @DisplayName("Удалить пользователя после прохождения всех тестов")
     public void deleteUserAfterTest() {
         // Проверка наличия токена
         if (token != null) {

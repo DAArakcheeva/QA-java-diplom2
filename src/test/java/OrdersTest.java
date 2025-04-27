@@ -1,5 +1,6 @@
 import io.qameta.allure.Issue;
 import io.qameta.allure.Step;
+import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
 import org.example.Order;
 import org.example.StellarBurgerClient;
@@ -37,6 +38,7 @@ public class OrdersTest {
 
     @Test
     @Step("Создание заказа с авторизацией")
+    @DisplayName("Создать заказ успешно с авторизованным пользователем")
     public void createOrderWithAuthSuccess() {
         // Регистрация и авторизация пользователя
         registerUserAndLogin();
@@ -65,6 +67,7 @@ public class OrdersTest {
 
     @Test
     @Step("Создание заказа без авторизации")
+    @DisplayName("Ошибка при создании заказа без авторизации")
     @Issue("Тест не проходит из-за бага в системе")
     public void createOrderWithoutAuthUnauthorized() {
         // Получаем список ингредиентов
@@ -85,6 +88,7 @@ public class OrdersTest {
 
     @Test
     @Step("Создание заказа с авторизацией и без ингредиентов")
+    @DisplayName("Ошибка при создании заказа с пустым списком ингредиентов")
     public void createOrderWithAuthAndNoIngredientsFail(){
 
         registerUserAndLogin();
@@ -97,6 +101,7 @@ public class OrdersTest {
 
     @Test
     @Step("Создание заказа с авторизацией и с неверным хешем ингредиентов")
+    @DisplayName("Ошибка при создании заказа с некорректными ингредиентами")
     public void createOrderWithAuthAndInvalidIngredientFail() {
 
         registerUserAndLogin();
@@ -108,6 +113,7 @@ public class OrdersTest {
 
     @After
     @Step("Удаление пользователя после завершения теста")
+    @DisplayName("Удалить пользователя после прохождения всех тестов")
     public void deleteUserAfterTest() {
         // Проверка наличия токена
         if (token != null) {

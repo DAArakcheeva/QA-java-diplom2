@@ -1,4 +1,5 @@
 import io.qameta.allure.Step;
+import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
 import org.example.StellarBurgerClient;
 import org.example.User;
@@ -32,6 +33,7 @@ public class UserOrdersTest {
 
     @Before
     @Step("Подготовка среды для тестов")
+    @DisplayName("Подготовительные шаги перед выполнением тестов")
     public void setUp() {
 
         registerUserAndLogin();
@@ -39,6 +41,7 @@ public class UserOrdersTest {
 
     @Test
     @Step("Получение заказов с авторизацией")
+    @DisplayName("Получение списка заказов пользователя с авторизацией")
     public void getUserOrdersWithAuthSuccess() {
 
         ValidatableResponse response = client.getUserOrders(token);
@@ -50,6 +53,7 @@ public class UserOrdersTest {
 
     @Test
     @Step("Получение заказов без авторизации")
+    @DisplayName("Ошибка при получении заказов без авторизации")
     public void getUserOrdersWithoutAuthFail() {
 
         ValidatableResponse response = client.getUserOrders("");
@@ -61,6 +65,7 @@ public class UserOrdersTest {
 
     @After
     @Step("Удаление пользователя после завершения теста")
+    @DisplayName("Удаление пользователя после завершения тестов")
     public void deleteUserAfterTest() {
         // Проверка наличия токена
         if (token != null) {

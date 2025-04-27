@@ -1,4 +1,5 @@
 import io.qameta.allure.Step;
+import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
 import org.example.StellarBurgerClient;
 import org.example.User;
@@ -16,6 +17,7 @@ public class UpdUserWithoutAuthTest {
 
     @Before
     @Step("Регистрация нового пользователя")
+    @DisplayName("Регистрация нового пользователя перед началом тестов")
     public void registerUserSuccess() {
 
         // Регистрация нового пользователя с динамическим email
@@ -33,6 +35,7 @@ public class UpdUserWithoutAuthTest {
 
     @Test
     @Step("Обновление почты и имени пользователя")
+    @DisplayName("Ошибка обновления данных пользователя без авторизации")
     public void updateEmailAndNameFail() {
 
         String newEmail = "NEW_" + user.getEmail();
@@ -51,6 +54,7 @@ public class UpdUserWithoutAuthTest {
 
     @After
     @Step("Удаление пользователя после завершения теста")
+    @DisplayName("Удаление пользователя после завершения всех тестов")
     public void deleteUserAfterTest() {
         // Проверка наличия токена
         if (token != null) {

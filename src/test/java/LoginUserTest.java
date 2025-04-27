@@ -1,4 +1,5 @@
 import io.qameta.allure.Step;
+import io.qameta.allure.junit4.DisplayName;
 import io.restassured.response.ValidatableResponse;
 import org.example.StellarBurgerClient;
 import org.example.User;
@@ -17,6 +18,7 @@ public class LoginUserTest {
 
     @Before
     @Step("Регистрация нового пользователя")
+    @DisplayName("Регистрация нового пользователя перед началом тестов")
     public void registerUserSuccess() {
 
         user = new User();
@@ -34,6 +36,7 @@ public class LoginUserTest {
 
     @Test
     @Step("Успешная авторизация пользователя")
+    @DisplayName("Проверка успешной авторизации пользователя")
     public void loginUserSuccess() {
 
         // Создание объекта UserCredentials на основе зарегистрированного пользователя
@@ -48,6 +51,7 @@ public class LoginUserTest {
 
     @Test
     @Step("Попытка авторизации без пароля")
+    @DisplayName("Авторизация пользователя без пароля должна завершаться ошибкой")
     public void loginUserWithoutPassword() {
 
         // Создание объекта UserCredentials без пароля
@@ -62,6 +66,7 @@ public class LoginUserTest {
 
     @After
     @Step("Удаление пользователя после окончания теста")
+    @DisplayName("Удаление пользователя после завершения всех тестов")
     public void deleteUserAfterTest() {
         // Проверка наличия токена
         if (token != null) {
